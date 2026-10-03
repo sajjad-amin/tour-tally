@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="tt-light-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="50%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    <clipPath id="squircle">
+      <rect width="512" height="512" rx="115" ry="115"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#squircle)">
+    <rect width="512" height="512" fill="url(#tt-light-bg)"/>
+    <circle cx="256" cy="256" r="210" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="8 8" opacity="0.3"/>
+    <!-- Mountain Peaks (Tour/Travel) -->
+    <path d="M120 350 L210 215 L265 295 L340 180 L420 350 Z" fill="#ffffff" opacity="0.25"/>
+    <path d="M160 350 L240 230 L290 310 L370 190 L430 350 Z" fill="#ffffff" opacity="0.95"/>
+    <!-- Compass Star & Tally Lines Overlay -->
+    <circle cx="256" cy="140" r="18" fill="#facc15"/>
+    <path d="M256 105 L263 133 L291 140 L263 147 L256 175 L249 147 L221 140 L249 133 Z" fill="#ffffff"/>
+    <!-- Tally Bar Motif (4 vertical stripes + 1 diagonal tally strike) -->
+    <g transform="translate(166, 320)" stroke="#0f172a" stroke-width="8" stroke-linecap="round">
+      <line x1="20" y1="20" x2="20" y2="70"/>
+      <line x1="55" y1="20" x2="55" y2="70"/>
+      <line x1="90" y1="20" x2="90" y2="70"/>
+      <line x1="125" y1="20" x2="125" y2="70"/>
+      <line x1="5" y1="65" x2="140" y2="25" stroke="#f59e0b" stroke-width="9"/>
+    </g>
+  </g>
+</svg>

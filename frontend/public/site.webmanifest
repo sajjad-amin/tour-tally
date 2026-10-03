@@ -1,0 +1,14 @@
+{
+  "name": "TourTally — Tour Expense Tracker",
+  "short_name": "TourTally",
+  "icons": [
+    {
+      "src": "/icons/dark/svg/favicon-dark.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#0f172a",
+  "background_color": "#0f172a",
+  "display": "standalone"
+}

@@ -1,0 +1,67 @@
+# ─── Laravel Environment & Logs ───────────────────────────────────────────────
+.env
+.env.backup
+.env.production
+.env.testing
+*.log
+
+# ─── Composer & PHP Dependencies ──────────────────────────────────────────────
+/vendor/
+
+# ─── Laravel Cache, Framework & Storage ───────────────────────────────────────
+/bootstrap/cache/*.php
+!/bootstrap/cache/.gitignore
+/storage/*.key
+/storage/pail
+/storage/logs/*.log
+/storage/framework/cache/*
+!/storage/framework/cache/.gitignore
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitignore
+/storage/framework/views/*
+!/storage/framework/views/.gitignore
+/public/storage
+/public/hot
+
+# ─── SQLite Databases ─────────────────────────────────────────────────────────
+database/*.sqlite
+database/*.sqlite-journal
+database/*.sqlite-shm
+database/*.sqlite-wal
+
+# ─── Testing Cache ────────────────────────────────────────────────────────────
+/.phpunit.cache
+.phpunit.result.cache
+
+# ─── Laravel Build Output (compiled from frontend/) ───────────────────────────
+/public/assets/
+/public/build/
+/public/index.html
+
+# ─── React / Vite Frontend ────────────────────────────────────────────────────
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ─── Editor & OS ──────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+/.idea/
+/.vscode/
+/.fleet/
+/.nova/
+/.zed/
+/.phpactor.json
+
+# ─── Misc ─────────────────────────────────────────────────────────────────────
+Homestead.json
+Homestead.yaml
+/auth.json
