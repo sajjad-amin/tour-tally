@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Permission;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
@@ -61,6 +62,7 @@ class AuthController extends Controller
             'email_verified_at' => null, // Explicitly unverified on registration
         ]);
 
+        Role::firstOrCreate(['name' => 'User', 'guard_name' => 'web']);
         $user->assignRole('User');
 
         // Fire Registered event to trigger email verification notification

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -85,6 +86,7 @@ class GoogleAuthController extends Controller
 
             // Ensure role is assigned if missing
             if ($user->roles()->count() === 0) {
+                Role::firstOrCreate(['name' => 'User', 'guard_name' => 'web']);
                 $user->assignRole('User');
             }
 
@@ -123,6 +125,7 @@ class GoogleAuthController extends Controller
             'email_verified_at' => now(),
         ]);
 
+        Role::firstOrCreate(['name' => 'User', 'guard_name' => 'web']);
         $user->assignRole('User');
 
         Auth::guard('web')->login($user, true);
