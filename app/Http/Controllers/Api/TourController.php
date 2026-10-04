@@ -104,25 +104,25 @@ class TourController extends Controller
                 });
             } else {
                 $q->where('created_by', $user->id)
-                  ->orWhereHas('tourMembers', function ($mq) use ($user) {
-                      $mq->where('user_id', $user->id);
-                  });
+                    ->orWhereHas('tourMembers', function ($mq) use ($user) {
+                        $mq->where('user_id', $user->id);
+                    });
             }
         })
-        ->with(['creator', 'members']);
+            ->with(['creator', 'members']);
 
         // Search by tour name or destination
         if ($request->filled('search')) {
             $search = trim($request->query('search'));
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('destination', 'like', "%{$search}%");
+                    ->orWhere('destination', 'like', "%{$search}%");
             });
         }
 
         // Sorting strictly: 'Active' first, then 'Planning' (start_date asc or created_at desc), then 'Completed'
         $query->orderByRaw("CASE WHEN status = 'active' THEN 1 WHEN status = 'planning' THEN 2 ELSE 3 END")
-              ->orderByRaw("CASE WHEN start_date IS NULL THEN 1 ELSE 0 END, start_date ASC, created_at DESC");
+            ->orderByRaw('CASE WHEN start_date IS NULL THEN 1 ELSE 0 END, start_date ASC, created_at DESC');
 
         $perPage = $request->query('per_page', 9);
 

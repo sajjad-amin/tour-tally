@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Tour;
 use App\Models\TourMember;
 use App\Models\User;
+use App\Notifications\TourInvitationNotification;
 use App\Notifications\TourMemberJoinedNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -67,7 +68,7 @@ class TourMemberController extends Controller
                 'is_already_member' => $alreadyMember,
                 'is_already_invited' => $alreadyInvited,
             ],
-            'message' => $alreadyMember 
+            'message' => $alreadyMember
                 ? "User '{$targetUser->name}' is already an active member of this tour."
                 : ($alreadyInvited ? "User '{$targetUser->name}' already has a pending invitation for this tour." : null),
         ]);
@@ -139,7 +140,7 @@ class TourMemberController extends Controller
         ]);
 
         // Send database notification to the invited user
-        $targetUser->notify(new \App\Notifications\TourInvitationNotification($tour, $currentUser));
+        $targetUser->notify(new TourInvitationNotification($tour, $currentUser));
 
         return response()->json([
             'message' => "Invitation sent to {$targetUser->name}.",
@@ -188,8 +189,8 @@ class TourMemberController extends Controller
                 ->where('tour_id', $tour->id)
                 ->where('role', 'admin');
         })
-        ->where('id', '!=', $currentUser->id)
-        ->get();
+            ->where('id', '!=', $currentUser->id)
+            ->get();
 
         foreach ($admins as $admin) {
             $admin->notify(new TourMemberJoinedNotification($tour, $currentUser));

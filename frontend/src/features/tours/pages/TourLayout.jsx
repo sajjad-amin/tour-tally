@@ -203,9 +203,20 @@ export default function TourLayout() {
             >
               <i className="bi bi-receipt-cutoff"></i>
               <span>Expenses</span>
-              <span className="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle small">
-                Phase 4
-              </span>
+            </NavLink>
+          </li>
+
+          <li className="nav-item">
+            <NavLink
+              to={`/tours/${tourId}/settlements`}
+              className={({ isActive }) =>
+                `nav-link d-flex align-items-center gap-2 ${
+                  isActive ? 'active fw-bold' : 'link-body-emphasis'
+                }`
+              }
+            >
+              <i className="bi bi-wallet2"></i>
+              <span>Settlements</span>
             </NavLink>
           </li>
         </ul>

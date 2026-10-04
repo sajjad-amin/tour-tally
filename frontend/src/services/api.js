@@ -121,6 +121,49 @@ export const notificationsApi = {
   clearAll: () => api.delete('/api/notifications/clear-all'),
 };
 
+// Expense Tracking endpoints
+export const expenseApi = {
+  getAll: (tourId) => api.get(`/api/tours/${tourId}/expenses`),
+  get: (tourId, expenseId) => api.get(`/api/tours/${tourId}/expenses/${expenseId}`),
+  create: (tourId, data) => api.post(`/api/tours/${tourId}/expenses`, data),
+  update: (tourId, expenseId, data) => api.put(`/api/tours/${tourId}/expenses/${expenseId}`, data),
+  approve: (tourId, expenseId) => api.put(`/api/tours/${tourId}/expenses/${expenseId}/approve`),
+  reject: (tourId, expenseId) => api.put(`/api/tours/${tourId}/expenses/${expenseId}/reject`),
+  requestEdit: (tourId, expenseId) => api.put(`/api/tours/${tourId}/expenses/${expenseId}/request-edit`),
+  requestDelete: (tourId, expenseId) => api.delete(`/api/tours/${tourId}/expenses/${expenseId}`),
+};
+
+export const expensesApi = expenseApi;
+
+// Split Settlement endpoints
+export const settlementApi = {
+  get: (tourId) => api.get(`/api/tours/${tourId}/settlements`),
+};
+
+export const settlementsApi = settlementApi;
+
+// Export & PDF Generation endpoints
+export const exportApi = {
+  getText: (tourId) => api.get(`/api/tours/${tourId}/export/text`),
+  downloadPdf: (tourId) =>
+    api.get(`/api/tours/${tourId}/export/pdf?download=1`, { responseType: 'blob' }),
+  openPdf: (tourId) =>
+    api.get(`/api/tours/${tourId}/export/pdf`, { responseType: 'blob' }),
+  getPosReceipt: (tourId, memberId, download = false) =>
+    api.get(`/api/tours/${tourId}/export/pos/${memberId}${download ? '?download=1' : ''}`, {
+      responseType: 'blob',
+    }),
+  printPosReceipt: (tourId, memberId, options = {}) =>
+    api.post(`/api/tours/${tourId}/export/pos/${memberId}/print`, options),
+  getPrinterStatus: () => api.get('/api/tours/thermal-printer/status'),
+  stopPrintJob: (data = {}) => api.post('/api/tours/thermal-printer/stop', data),
+};
+
+// Dashboard endpoints
+export const dashboardApi = {
+  getSummary: () => api.get('/api/dashboard'),
+};
+
 export const notificationApi = notificationsApi;
 
 export default api;

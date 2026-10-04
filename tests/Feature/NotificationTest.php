@@ -6,7 +6,6 @@ use App\Models\Tour;
 use App\Models\TourMember;
 use App\Models\User;
 use App\Notifications\TourInvitationNotification;
-use App\Notifications\TourMemberJoinedNotification;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -195,4 +194,3 @@ class NotificationTest extends TestCase
         $this->assertEquals(0, $invitee->notifications()->count());
     }
 }
-

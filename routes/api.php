@@ -1,10 +1,14 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\ExpenseController;
+use App\Http\Controllers\Api\ExportController;
 use App\Http\Controllers\Api\NewPasswordController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PasswordResetLinkController;
 use App\Http\Controllers\Api\SettingsController;
+use App\Http\Controllers\Api\SettlementController;
 use App\Http\Controllers\Api\TourController;
 use App\Http\Controllers\Api\TourMemberController;
 use App\Http\Controllers\Api\UserController;
@@ -42,6 +46,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
+    // Dashboard Summary
+    Route::get('/dashboard', [DashboardController::class, 'index']);
+
     // User Profile & Account Management
     Route::put('/user/profile', [UserProfileController::class, 'updateProfile']);
     Route::put('/user/password', [UserProfileController::class, 'updatePassword']);
@@ -61,6 +68,27 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{tour}/members/accept', [TourMemberController::class, 'acceptInvite']);
         Route::post('/{tour}/members/reject', [TourMemberController::class, 'rejectInvite']);
         Route::delete('/{tour}/members/{memberId}', [TourMemberController::class, 'removeMember']);
+
+        // Tour Expenses Management
+        Route::get('/{tour}/expenses', [ExpenseController::class, 'index']);
+        Route::post('/{tour}/expenses', [ExpenseController::class, 'store']);
+        Route::get('/{tour}/expenses/{expense}', [ExpenseController::class, 'show']);
+        Route::put('/{tour}/expenses/{expense}', [ExpenseController::class, 'update']);
+        Route::delete('/{tour}/expenses/{expense}', [ExpenseController::class, 'destroy']);
+        Route::put('/{tour}/expenses/{expense}/approve', [ExpenseController::class, 'approve']);
+        Route::put('/{tour}/expenses/{expense}/reject', [ExpenseController::class, 'reject']);
+        Route::put('/{tour}/expenses/{expense}/request-edit', [ExpenseController::class, 'requestEdit']);
+
+        // Tour Split Settlements & Exports
+        Route::get('/{tour}/settlements', [SettlementController::class, 'index']);
+        Route::get('/{tour}/export/text', [ExportController::class, 'exportText']);
+        Route::get('/{tour}/export/pdf', [ExportController::class, 'exportGroupPdf']);
+        Route::get('/{tour}/export/pos/{memberId}', [ExportController::class, 'exportPosReceipt']);
+        Route::post('/{tour}/export/pos/{memberId}/print', [ExportController::class, 'exportPosReceipt']);
+
+        // Thermal Printer Bridge
+        Route::get('/thermal-printer/status', [ExportController::class, 'getPrinterStatus']);
+        Route::post('/thermal-printer/stop', [ExportController::class, 'stopPrintJob']);
     });
 
     // Notifications Management

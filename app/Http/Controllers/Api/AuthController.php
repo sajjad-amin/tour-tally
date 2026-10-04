@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Permission;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
@@ -34,7 +35,7 @@ class AuthController extends Controller
             'updated_at' => $user->updated_at,
             'roles' => $user->getRoleNames(),
             'permissions' => $user->hasRole('Server Admin') || $user->role === 'admin'
-                ? \App\Models\Permission::pluck('name')
+                ? Permission::pluck('name')
                 : $user->getAllPermissions()->pluck('name'),
         ];
     }

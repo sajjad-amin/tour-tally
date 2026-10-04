@@ -5,8 +5,11 @@ namespace Tests\Feature;
 use App\Models\Setting;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Password;
 use Tests\TestCase;
 
 class AuthAndUserTest extends TestCase
@@ -258,7 +261,7 @@ class AuthAndUserTest extends TestCase
 
     public function test_user_can_request_password_reset_link(): void
     {
-        \Illuminate\Support\Facades\Notification::fake();
+        Notification::fake();
 
         $user = User::create([
             'name' => 'Reset Request User',
@@ -276,9 +279,9 @@ class AuthAndUserTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonStructure(['status', 'message']);
 
-        \Illuminate\Support\Facades\Notification::assertSentTo(
+        Notification::assertSentTo(
             $user,
-            \Illuminate\Auth\Notifications\ResetPassword::class
+            ResetPassword::class
         );
     }
 
@@ -293,7 +296,7 @@ class AuthAndUserTest extends TestCase
         ]);
         $user->assignRole('User');
 
-        $token = \Illuminate\Support\Facades\Password::createToken($user);
+        $token = Password::createToken($user);
 
         $response = $this->postJson('/api/reset-password', [
             'token' => $token,
@@ -548,4 +551,3 @@ class AuthAndUserTest extends TestCase
         $this->assertDatabaseMissing('users', ['id' => $targetUser->id]);
     }
 }
-

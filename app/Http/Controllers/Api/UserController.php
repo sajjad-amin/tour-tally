@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Permission;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -34,7 +35,7 @@ class UserController extends Controller
             'updated_at' => $user->updated_at,
             'roles' => $user->getRoleNames(),
             'permissions' => $user->hasRole('Server Admin') || $user->role === 'admin'
-                ? \App\Models\Permission::pluck('name')
+                ? Permission::pluck('name')
                 : $user->getAllPermissions()->pluck('name'),
         ];
     }
@@ -50,8 +51,8 @@ class UserController extends Controller
             $search = trim($request->query('search'));
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
             });
         }
 
@@ -60,12 +61,12 @@ class UserController extends Controller
             if ($role === 'Server Admin' || $role === 'admin') {
                 $query->where(function ($q) {
                     $q->where('role', 'admin')
-                      ->orWhereHas('roles', fn ($rq) => $rq->where('name', 'Server Admin'));
+                        ->orWhereHas('roles', fn ($rq) => $rq->where('name', 'Server Admin'));
                 });
             } elseif ($role === 'User' || $role === 'user') {
                 $query->where(function ($q) {
                     $q->where('role', '!=', 'admin')
-                      ->orWhereDoesntHave('roles', fn ($rq) => $rq->where('name', 'Server Admin'));
+                        ->orWhereDoesntHave('roles', fn ($rq) => $rq->where('name', 'Server Admin'));
                 });
             }
         }

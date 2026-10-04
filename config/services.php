@@ -41,4 +41,9 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
 
+    'tinypos' => [
+        'base_url' => env('TINYPOS_BASE_URL', ''),
+        'api_key' => env('TINYPOS_API_KEY'),
+    ],
+
 ];

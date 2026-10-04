@@ -7,6 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.3",
+        "carlos-meneses/laravel-mpdf": "^2.1",
         "laravel/framework": "^13.17",
         "laravel/sanctum": "^4.0",
         "laravel/socialite": "^5.31",
@@ -15,6 +16,7 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
+        "laravel/boost": "^2.10",
         "laravel/pail": "^1.2.5",
         "laravel/pao": "^1.0.6",
         "laravel/pint": "^1.27",

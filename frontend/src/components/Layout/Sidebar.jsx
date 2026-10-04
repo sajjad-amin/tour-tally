@@ -50,27 +50,6 @@ export default function Sidebar() {
         style={{ minHeight: 'calc(100vh - 72px)' }}
       >
         <ul className="nav nav-pills flex-column mb-auto gap-1">
-          {/* Dashboard */}
-          <li className="nav-item">
-            <NavLink to="/dashboard" className={navCls}>
-              <i className="bi bi-speedometer2 me-2"></i>Dashboard
-            </NavLink>
-          </li>
-
-          {/* Tours & Trips */}
-          <li className="nav-item">
-            <NavLink to="/tours" className={navCls}>
-              <i className="bi bi-compass me-2"></i>Tours &amp; Trips
-            </NavLink>
-          </li>
-
-          {/* Profile */}
-          <li className="nav-item">
-            <NavLink to="/profile" className={navCls}>
-              <i className="bi bi-person-circle me-2"></i>Profile
-            </NavLink>
-          </li>
-
           {/* Administration Accordion (Server Admin only) */}
           {isAdmin && (
             <li className="nav-item">
@@ -105,6 +84,25 @@ export default function Sidebar() {
               </div>
             </li>
           )}
+          {/* Dashboard */}
+          <li className="nav-item">
+            <NavLink to="/dashboard" className={navCls}>
+              <i className="bi bi-speedometer2 me-2"></i>Dashboard
+            </NavLink>
+          </li>
+
+          {/* Tours & Trips */}
+          <li className="nav-item">
+            <NavLink to="/tours" className={navCls}>
+              <i className="bi bi-compass me-2"></i>Tours &amp; Trips
+            </NavLink>
+          </li>
+          {/* Show Profile menu if the profile page is rendered */}
+          {location.pathname === '/profile' && (<li className="nav-item">
+            <NavLink to="/profile" className={navCls}>
+              <i className="bi bi-person-circle me-2"></i>Profile
+            </NavLink>
+          </li>)}
         </ul>
       </div>
     </div>

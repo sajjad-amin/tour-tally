@@ -22,6 +22,7 @@ import TourLayout from '@/features/tours/pages/TourLayout.jsx';
 import TourOverview from '@/features/tours/pages/TourOverview.jsx';
 import TourMembers from '@/features/tours/pages/TourMembers.jsx';
 import TourExpenses from '@/features/tours/pages/TourExpenses.jsx';
+import TourSettlements from '@/features/tours/pages/TourSettlements.jsx';
 import Notifications from '@/features/notifications/pages/Notifications.jsx';
 
 /**
@@ -62,6 +63,7 @@ export const router = createBrowserRouter([
               { index: true, element: <TourOverview /> },
               { path: 'members', element: <TourMembers /> },
               { path: 'expenses', element: <TourExpenses /> },
+              { path: 'settlements', element: <TourSettlements /> },
             ],
           },
           {

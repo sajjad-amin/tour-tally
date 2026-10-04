@@ -114,4 +114,29 @@ class Tour extends Model
             ->where('user_id', $userId)
             ->exists();
     }
+
+    /**
+     * Check if a given user is an active joined member (or creator) of this tour.
+     */
+    public function isJoinedMember(User|string $user): bool
+    {
+        $userId = $user instanceof User ? $user->id : $user;
+
+        if ($this->created_by === $userId) {
+            return true;
+        }
+
+        return $this->tourMembers()
+            ->where('user_id', $userId)
+            ->where('status', 'joined')
+            ->exists();
+    }
+
+    /**
+     * Expenses logged for this tour.
+     */
+    public function expenses(): HasMany
+    {
+        return $this->hasMany(Expense::class, 'tour_id');
+    }
 }

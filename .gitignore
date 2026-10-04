@@ -65,3 +65,8 @@ Desktop.ini
 Homestead.json
 Homestead.yaml
 /auth.json
+current_status.md
+deploy.sh
+.claude/
+.mcp.json
+boost.json

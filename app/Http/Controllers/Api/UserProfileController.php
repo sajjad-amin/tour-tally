@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Permission;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 
@@ -35,7 +37,7 @@ class UserProfileController extends Controller
             'updated_at' => $user->updated_at,
             'roles' => $user->getRoleNames(),
             'permissions' => $user->hasRole('Server Admin') || $user->role === 'admin'
-                ? \App\Models\Permission::pluck('name')
+                ? Permission::pluck('name')
                 : $user->getAllPermissions()->pluck('name'),
         ];
     }
@@ -116,7 +118,7 @@ class UserProfileController extends Controller
         /** @var User $user */
         $user = $request->user();
 
-        \Illuminate\Support\Facades\Log::info('DELETE_ACCOUNT_REQUEST', [
+        Log::info('DELETE_ACCOUNT_REQUEST', [
             'user_id' => $user?->id,
             'email' => $user?->email,
             'has_password' => ! empty($user?->password),

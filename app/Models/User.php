@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -20,7 +20,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens, HasRoles, HasUuids;
+    use HasApiTokens, HasFactory, HasRoles, HasUuids, Notifiable;
 
     /**
      * The "type" of the primary key ID.
@@ -122,5 +122,38 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(TourMember::class, 'user_id');
     }
-}
 
+    /**
+     * Expense payer records for this user.
+     */
+    public function expensePayers(): HasMany
+    {
+        return $this->hasMany(ExpensePayer::class, 'user_id');
+    }
+
+    /**
+     * Expenses paid by this user via expense_payers pivot.
+     */
+    public function expensesPaid(): BelongsToMany
+    {
+        return $this->belongsToMany(Expense::class, 'expense_payers', 'user_id', 'expense_id')
+            ->withPivot('amount')
+            ->withTimestamps();
+    }
+
+    /**
+     * Expenses logged/added by this user.
+     */
+    public function expensesAdded(): HasMany
+    {
+        return $this->hasMany(Expense::class, 'added_by');
+    }
+
+    /**
+     * Splits owed by this user.
+     */
+    public function expenseSplits(): HasMany
+    {
+        return $this->hasMany(ExpenseSplit::class, 'user_id');
+    }
+}

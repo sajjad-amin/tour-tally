@@ -512,5 +512,3 @@ class TourTest extends TestCase
             ->assertJsonPath('user.is_already_member', true);
     }
 }
-
-
