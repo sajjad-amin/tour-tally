@@ -122,7 +122,7 @@ export default function Dashboard() {
       {/* ── Active Tour Ongoing Banner ─────────────────────────────── */}
       {hasActiveTour && activeTour ? (
         <>
-          <div className="card border-0 shadow-sm bg-body mb-4 overflow-hidden border-start border-4 border-success">
+          <div className="card border border-secondary-subtle border-start border-4 border-success shadow-sm bg-body mb-4 overflow-hidden">
             <div className="card-body p-4">
               <div className="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
                 <div>
@@ -251,7 +251,7 @@ export default function Dashboard() {
           <div className="row g-4 mb-4">
             {/* Recent Expenses Mini-Ledger */}
             <div className="col-12 col-lg-8">
-              <div className="card shadow-sm border-0 bg-body h-100">
+              <div className="card shadow-sm border border-secondary-subtle bg-body h-100">
                 <div className="card-header bg-body-tertiary py-3 d-flex align-items-center justify-content-between">
                   <div className="d-flex align-items-center gap-2">
                     <i className="bi bi-receipt text-primary fs-5"></i>
@@ -328,7 +328,7 @@ export default function Dashboard() {
 
             {/* Quick Actions & Tour Meta */}
             <div className="col-12 col-lg-4">
-              <div className="card shadow-sm border-0 bg-body mb-3">
+              <div className="card shadow-sm border border-secondary-subtle bg-body mb-3">
                 <div className="card-header bg-body-tertiary py-3">
                   <h6 className="mb-0 fw-bold">
                     <i className="bi bi-lightning-charge text-warning me-2"></i>Quick Actions
@@ -367,7 +367,7 @@ export default function Dashboard() {
 
               {/* Other Active Tours if any */}
               {otherActiveTours.length > 0 && (
-                <div className="card shadow-sm border-0 bg-body">
+                <div className="card shadow-sm border border-secondary-subtle bg-body">
                   <div className="card-header bg-body-tertiary py-2 px-3">
                     <small className="fw-bold text-uppercase text-body-secondary">
                       Other Active Tours
@@ -462,7 +462,7 @@ export default function Dashboard() {
           </div>
 
           {/* Upcoming Tours Section */}
-          <div className="card shadow-sm border-0 bg-body mb-4">
+          <div className="card shadow-sm border border-secondary-subtle bg-body mb-4">
             <div className="card-header bg-body-tertiary py-3 d-flex align-items-center justify-content-between">
               <div className="d-flex align-items-center gap-2">
                 <i className="bi bi-calendar2-range text-primary fs-5"></i>

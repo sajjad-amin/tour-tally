@@ -209,6 +209,41 @@ export default function ExpenseActionModal({
     return buildSplitsDiff(expense?.splits || [], proposed.splits);
   }, [isEditReview, expense?.splits, proposed?.splits]);
 
+  // Standard Payers & Splits list for non-diff views (pending / delete_requested / standard approve)
+  const standardPayers = useMemo(() => {
+    if (expense?.payers && expense.payers.length > 0) {
+      return expense.payers.map((p) => ({
+        userId: p.user_id || p.user?.id,
+        name: p.user?.name || 'Explorer',
+        amount: parseFloat(p.amount) || 0,
+      }));
+    }
+    if (expense?.paid_by) {
+      return [
+        {
+          userId: expense.paid_by.id,
+          name: expense.paid_by.name || 'Explorer',
+          amount: parseFloat(expense.amount) || 0,
+        },
+      ];
+    }
+    return [];
+  }, [expense]);
+
+  const standardSplits = useMemo(() => {
+    if (expense?.splits && expense.splits.length > 0) {
+      return expense.splits.map((s) => ({
+        userId: s.user_id || s.user?.id,
+        name: s.user?.name || 'Explorer',
+        amountOwed: parseFloat(s.amount_owed || s.amount) || 0,
+      }));
+    }
+    return [];
+  }, [expense]);
+
+  const totalPaid = standardPayers.reduce((acc, p) => acc + p.amount, 0);
+  const totalOwed = standardSplits.reduce((acc, s) => acc + s.amountOwed, 0);
+
   if (!isOpen || !expense) return null;
 
   const isDeletingPermanent = actionType === 'approve' && expense.status === 'delete_requested';
@@ -291,7 +326,7 @@ export default function ExpenseActionModal({
       aria-modal="true"
       style={{ backgroundColor: 'rgba(0, 0, 0, 0.55)', zIndex: 1055 }}
     >
-      <div className={`modal-dialog modal-dialog-centered ${isEditReview ? 'modal-lg modal-dialog-scrollable' : ''}`}>
+      <div className="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
         <div className="modal-content bg-body text-body border-0 shadow">
           {/* Header */}
           <div className={`modal-header border-bottom py-3 ${isEditReview ? 'bg-warning-subtle text-warning-emphasis' : ''}`}>
@@ -299,9 +334,13 @@ export default function ExpenseActionModal({
               <i className={`bi ${iconClass} fs-5`}></i>
               <div>
                 <h5 className="modal-title fw-bold mb-0">{title}</h5>
-                {isEditReview && (
+                {isEditReview ? (
                   <small className="text-body-secondary d-block">
                     Submitted by <strong>{expense.added_by?.name || 'Explorer'}</strong> • Comparing current vs proposed revisions
+                  </small>
+                ) : (
+                  <small className="text-body-secondary d-block">
+                    {oldTitle} • {oldCategory} • {oldDate}
                   </small>
                 )}
               </div>
@@ -619,30 +658,172 @@ export default function ExpenseActionModal({
               </div>
             ) : (
               <div>
-                <p className="mb-3">{descriptionText}</p>
+                {/* Status / Action Banner */}
+                {isDeletingPermanent ? (
+                  <div className="alert alert-danger py-2 px-3 small d-flex align-items-start gap-2 mb-3">
+                    <i className="bi bi-exclamation-triangle-fill fs-5 flex-shrink-0 text-danger"></i>
+                    <div>
+                      <strong>Permanent Deletion Review:</strong> {descriptionText}
+                    </div>
+                  </div>
+                ) : actionType === 'approve' ? (
+                  <div className="alert alert-primary py-2 px-3 small d-flex align-items-start gap-2 mb-3">
+                    <i className="bi bi-info-circle-fill fs-5 flex-shrink-0 text-primary"></i>
+                    <div>
+                      <strong>Approval Review:</strong> Please review the complete expense details, payer contributions, and split allocations below before approving.
+                    </div>
+                  </div>
+                ) : actionType === 'reject' ? (
+                  <div className="alert alert-warning py-2 px-3 small d-flex align-items-start gap-2 mb-3">
+                    <i className="bi bi-exclamation-circle-fill fs-5 flex-shrink-0 text-warning-emphasis"></i>
+                    <div>
+                      <strong>Rejection Confirmation:</strong> {descriptionText}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="alert alert-danger py-2 px-3 small d-flex align-items-start gap-2 mb-3">
+                    <i className="bi bi-exclamation-triangle-fill fs-5 flex-shrink-0 text-danger"></i>
+                    <div>
+                      <strong>Deletion Request:</strong> {descriptionText}
+                    </div>
+                  </div>
+                )}
 
-                {/* Default Expense details summary card */}
-                <div className="card bg-body-tertiary border p-3 small">
-                  <div className="d-flex justify-content-between mb-1">
-                    <span className="text-body-secondary">Category:</span>
-                    <span className="fw-semibold">{expense.category}</span>
-                  </div>
-                  <div className="d-flex justify-content-between mb-1">
-                    <span className="text-body-secondary">Amount:</span>
-                    <span className="fw-bold text-success">{oldAmount.toFixed(2)}</span>
-                  </div>
-                  <div className="d-flex justify-content-between mb-1">
-                    <span className="text-body-secondary">Paid By:</span>
-                    <span>
-                      {expense.payers && expense.payers.length > 0
-                        ? expense.payers.map((p) => p.user?.name || 'Explorer').join(', ')
-                        : expense.paid_by?.name || 'Explorer'}
-                    </span>
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <span className="text-body-secondary">Date:</span>
-                    <span>{expense.date}</span>
-                  </div>
+                {/* Core Details Table */}
+                <h6 className="fw-bold small text-uppercase text-body-secondary mb-2">
+                  <i className="bi bi-card-checklist me-1 text-primary"></i>Core Details
+                </h6>
+                <div className="table-responsive border rounded mb-3">
+                  <table className="table table-sm align-middle mb-0">
+                    <thead className="border-bottom bg-body-secondary small text-uppercase text-body-secondary">
+                      <tr className="bg-body-secondary">
+                        <th className="bg-body-secondary ps-3" style={{ width: '30%' }}>Field</th>
+                        <th className="bg-body-secondary pe-3" style={{ width: '70%' }}>Value</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="fw-semibold text-body-secondary small ps-3">Title</td>
+                        <td className="pe-3 fw-medium">{oldTitle}</td>
+                      </tr>
+                      <tr>
+                        <td className="fw-semibold text-body-secondary small ps-3">Total Amount</td>
+                        <td className="pe-3 font-monospace fw-bold text-success">{oldAmount.toFixed(2)}</td>
+                      </tr>
+                      <tr>
+                        <td className="fw-semibold text-body-secondary small ps-3">Category</td>
+                        <td className="pe-3">
+                          <span className="badge bg-secondary-subtle text-secondary">{oldCategory}</span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="fw-semibold text-body-secondary small ps-3">Date</td>
+                        <td className="pe-3">{oldDate}</td>
+                      </tr>
+                      <tr>
+                        <td className="fw-semibold text-body-secondary small ps-3">Logged By</td>
+                        <td className="pe-3">{expense.added_by?.name || 'Explorer'}</td>
+                      </tr>
+                      {oldNotes ? (
+                        <tr>
+                          <td className="fw-semibold text-body-secondary small ps-3">Notes</td>
+                          <td className="pe-3 text-body-secondary small">{oldNotes}</td>
+                        </tr>
+                      ) : null}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Payer Allocations Table */}
+                <div className="d-flex align-items-center justify-content-between mb-2">
+                  <h6 className="fw-bold small text-uppercase text-body-secondary mb-0">
+                    <i className="bi bi-cash-stack me-1 text-success"></i>Payer Allocations
+                  </h6>
+                  <span className="badge bg-body-secondary text-body-secondary">
+                    {standardPayers.length} {standardPayers.length === 1 ? 'Payer' : 'Payers'}
+                  </span>
+                </div>
+                <div className="table-responsive border rounded mb-3">
+                  <table className="table table-sm align-middle mb-0">
+                    <thead className="border-bottom bg-body-secondary small text-uppercase text-body-secondary">
+                      <tr className="bg-body-secondary">
+                        <th className="bg-body-secondary ps-3">Explorer</th>
+                        <th className="bg-body-secondary text-end pe-3">Amount Paid</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {standardPayers.length === 0 ? (
+                        <tr>
+                          <td colSpan={2} className="text-center text-body-secondary small py-2">
+                            No payer allocations recorded
+                          </td>
+                        </tr>
+                      ) : (
+                        standardPayers.map((p, idx) => (
+                          <tr key={p.userId || idx}>
+                            <td className="ps-3 fw-medium small">{p.name}</td>
+                            <td className="text-end pe-3 font-monospace small fw-bold text-body">
+                              {p.amount.toFixed(2)}
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                      {standardPayers.length > 1 && (
+                        <tr className="bg-body-tertiary fw-bold border-top">
+                          <td className="ps-3 small">Total Paid</td>
+                          <td className="text-end pe-3 font-monospace small text-success">
+                            {totalPaid.toFixed(2)}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Split Allocations Table */}
+                <div className="d-flex align-items-center justify-content-between mb-2">
+                  <h6 className="fw-bold small text-uppercase text-body-secondary mb-0">
+                    <i className="bi bi-pie-chart me-1 text-info"></i>Split Allocations
+                  </h6>
+                  <span className="badge bg-body-secondary text-body-secondary">
+                    {standardSplits.length} {standardSplits.length === 1 ? 'Member' : 'Members'}
+                  </span>
+                </div>
+                <div className="table-responsive border rounded mb-1">
+                  <table className="table table-sm align-middle mb-0">
+                    <thead className="border-bottom bg-body-secondary small text-uppercase text-body-secondary">
+                      <tr className="bg-body-secondary">
+                        <th className="bg-body-secondary ps-3">Explorer</th>
+                        <th className="bg-body-secondary text-end pe-3">Amount Owed</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {standardSplits.length === 0 ? (
+                        <tr>
+                          <td colSpan={2} className="text-center text-body-secondary small py-2">
+                            No split allocations recorded
+                          </td>
+                        </tr>
+                      ) : (
+                        standardSplits.map((s, idx) => (
+                          <tr key={s.userId || idx}>
+                            <td className="ps-3 fw-medium small">{s.name}</td>
+                            <td className="text-end pe-3 font-monospace small fw-bold text-body">
+                              {s.amountOwed.toFixed(2)}
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                      {standardSplits.length > 1 && (
+                        <tr className="bg-body-tertiary fw-bold border-top">
+                          <td className="ps-3 small">Total Owed</td>
+                          <td className="text-end pe-3 font-monospace small text-primary">
+                            {totalOwed.toFixed(2)}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             )}
